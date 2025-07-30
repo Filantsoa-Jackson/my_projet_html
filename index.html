@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription élève en ligne</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+ <h1>Bienvenue dans notre Ecole</h1>
+  <p>Savoir - Discipline - Réussite</p>
+  <div class="allbox">
+    <div class="box">
+      <p class="heading">Classe 11è à 7è</p>
+      <p class="tag"> Niveau Primaire</p>
+      <div class="price"></i>30000 Ar</div>
+      <div class="plan">
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Illimite </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Cours de salle </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Responsable</div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Rakoto Jean </div>
+        <button class="subscribe-btn" data-plan="Plan gratuit">Inscrire maintenant</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <p class="heading">Pour eleve entre 6ème et 3ème</p>
+      <p class="tag"> Niveau Secondaire</p>
+      <div class="price"></i>40000 Ar </div>
+      <div class="plan">
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> illimités </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Cours de salle  </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Responsable</div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Mr Rakoto Bernard</div>
+        <button class="subscribe-btn" data-plan="Pro Plan">Inscrire maintenant</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <p class="heading">Pour eleve entre 2end et Terminale </p>
+      <p class="tag">Niveau Tertiaire</p>
+      <div class="price"></i>50000 Ar </div>
+      <div class="plan">
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Illimite </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Cours de salle  </div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Responsable</div>
+        <div><i class="fa-solid fa-circle-check fa-lg"></i> Mmme Rakoto Lalao</div>
+        <button class="subscribe-btn" data-plan="Plan de base">Inscrire maintenant</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULAIRE -->
+  <div class="form-popup" id="subscribeForm">
+    <form id="subscriptionForm">
+      <h2>Formulaire d'inscription élève</h2>
+      <input type="text" name="nom" placeholder="Nom" required />
+      <input type="text" name="prenom" placeholder="Prénom" required />
+
+      <label for="classeSelect">Classe :</label>
+      <select name="classe" id="classeSelect" required>
+        <!-- Options générées par JS -->
+      </select>
+
+      <input type="hidden" name="plan" id="selectedPlan" readonly />
+      
+      <button type="submit">Envoyer</button>
+      <button type="button" onclick="closeForm()">Annuler</button>
+    </form>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("FMrIawxq02poPPGz1"); // ta Public Key
+    })();
+
+    const plansClasses = {
+  "Plan gratuit": [
+    "Primaire 11e",
+    "Primaire 10e",
+    "Primaire 9e",
+    "Primaire 8e",
+    "Primaire 7e"
+  ],
+  "Pro Plan": [
+    "Secondaire 6e",
+    "Secondaire 5e",
+    "Secondaire 4e",
+    "Secondaire 3e"
+  ],
+  "Plan de base": [
+    "Tertiaire 2nde",
+    "Tertiaire 1ère",
+    "Tertiaire Terminale"
+  ]
+};
+
+
+    const subscribeButtons = document.querySelectorAll(".subscribe-btn");
+    const classeSelect = document.getElementById("classeSelect");
+    const selectedPlanInput = document.getElementById("selectedPlan");
+    const formPopup = document.getElementById("subscribeForm");
+
+    subscribeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const plan = btn.getAttribute("data-plan");
+        selectedPlanInput.value = plan;
+
+        // Vider les options existantes
+        classeSelect.innerHTML = "";
+
+        // Ajouter options selon plan
+        const classes = plansClasses[plan] || [];
+
+        if (classes.length === 0) {
+          classeSelect.innerHTML = `<option value="">Aucune classe disponible</option>`;
+          classeSelect.disabled = true;
+        } else {
+          classeSelect.disabled = false;
+          classes.forEach((cls) => {
+            const option = document.createElement("option");
+            option.value = cls;
+            option.textContent = cls;
+            classeSelect.appendChild(option);
+          });
+        }
+
+        formPopup.style.display = "block";
+      });
+    });
+
+    function closeForm() {
+      formPopup.style.display = "none";
+      document.getElementById("subscriptionForm").reset();
+    }
+
+    document.getElementById("subscriptionForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      emailjs.sendForm("service_0y0hf57", "template_ikwp4oj", this)
+        .then(function () {
+          alert("Inscription envoyée avec succès !");
+          closeForm();
+        })
+        .catch(function (error) {
+          alert("Erreur : " + JSON.stringify(error));
+        });
+    });
+  </script>
+</body>
+</html>
